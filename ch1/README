@@ -1,0 +1,103 @@
+SimD
+-----------------------------------------------------------------------------
+This example is part of the SimD distribution available as Open Source
+Software at:
+
+  http://code.google.com/p/simd-cxx/
+
+Informations on how to build simd are available in the SimD README and 
+INSTALL files. For any questions, comments of feedback concerning SimD
+please contact Angelo Corsaro <angelo.corsaro@gmail.com>.
+
+General Information
+-----------------------------------------------------------------------------
+This example shows how to write a simple application that publishes values
+from a temperature sensor able to measure the temperature and humidity.
+
+The temperature sensor type is defined in the file <TempControl.idl>,
+the publishing applications is <tspub.cpp> and the subscribing application
+is in <tssub.cpp>. The publishing applications publishes sensor values
+at a specified rate, the subscribing application simply prints out what
+it receives.
+
+
+Compiling the Example
+-----------------------------------------------------------------------------
+In order to compile the example do the following from the example directory:
+
+$ make
+
+
+In case you ever want to recompile the <TempControl.idl> you'll need to do:
+
+$ make idl
+
+
+Running the Example
+-----------------------------------------------------------------------------
+The first step is to look at the program command line options:
+
+$./tspub
+Available options for <tspub> are:
+  --help                produce help message
+  --id arg              the (non-negative) integer representing the sensor ID
+  --scale arg           the sensor temperature scale (C = CELSIUS, F = 
+                        FAHRENHEIT, K = KELVIN)
+  --samples arg         the (non-negative) number of samples that will be read
+  --period arg          the polling period (in milli-sec > 0)
+  --T0 arg              Temperature reference point
+  --deltaT arg          Temperature variation interval
+  --H0 arg              Humidity reference point
+  --deltaH arg          Humidity variation interval
+  --default             runs the application with id=0, scale=C, samples=1000, 
+                        period=1sec, T0=25, deltaT=15, H0=0.5, deltaH=0.2
+
+$./tssub
+Available options for <tssub> are:
+  --help                produce help message
+  --samples arg         the number of samples that will be read
+  --period arg          the polling period (in milli-sec > 0)
+  --default             runs the application with samples=1000 and period=1sec
+
+
+Before running the example you need to verify that the OpenSplice DDS
+is actually running. To check this type the following:
+
+$ospl list
+
+If you don't get any output from this command then do the following:
+
+$ospl start
+
+Then check again the status and you should see:
+
+$ospl list
+Splice System with domain name "OpenSpliceV4.3" is found running
+
+
+At this point to run the example run the example I suggest that I start first with a
+single publisher and subscriber to get familiar with the example and then add 
+more subscriber and even publisher.
+
+Let's start the publisher:
+
+./tspub --id 10 --scale C --T0 21 --deltaT 10 --H0 0.4 --deltaH 0.1 --period 500 --samples 100
+
+Then starting the subscriber you'll see:
+
+./tssub --samples 10 --period 500 
+(id = 10, temp = 23.7727, hum = 0.423588, scale = C)
+(id = 10, temp = 25.5603, hum = 0.455769, scale = C)
+(id = 10, temp = 28.6291, hum = 0.421887, scale = C)
+(id = 10, temp = 22.8064, hum = 0.471388, scale = C)
+(id = 10, temp = 25.3033, hum = 0.421004, scale = C)
+(id = 10, temp = 22.5972, hum = 0.404491, scale = C)
+(id = 10, temp = 22.2972, hum = 0.427201, scale = C)
+(id = 10, temp = 27.8505, hum = 0.496068, scale = C)
+(id = 10, temp = 23.278, hum = 0.437819, scale = C)
+(id = 10, temp = 28.775, hum = 0.426177, scale = C)
+
+Notice that the number you might see are not likely to be the same regardless of the T0, 
+deltaT, H0 and deltaH settings. This is due to the fact that the applications variates
+the reference temperature randomly withing the specified interval.
+ 
