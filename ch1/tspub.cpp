@@ -9,11 +9,11 @@
 int
 main(int argc, char* argv[])
 {
-  if (argc < 1) {
+  if (argc < 2) {
     std::cout << "USAGE:\n\t tspub <sensor-id>" << std::endl;
     return -1;
   }
-  int sid = atoi(argv[0]);
+  int sid = atoi(argv[1]);
   const int N = 100;
 
 
@@ -34,6 +34,7 @@ main(int argc, char* argv[])
   float hum  = avgH + ((random()*deltaH)/RAND_MAX);
 
   tutorial::TempSensorType sensor( sid, temp, hum, tutorial::CELSIUS );
+
   for (unsigned int i = 0; i < N; ++i) {
     dw.write(sensor);
     std::cout << "DW << " << sensor << std::endl;
