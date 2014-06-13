@@ -1,59 +1,39 @@
-// -- Std C++ Include
+// -- Std C/C++ Include
 #include <iostream>
-// -- Boost Include
-#include <boost/program_options.hpp>
-// -- SimD includes
-#include <dds/dds.hpp>
-#include <gen/ccpp_TempControl.h>
-// -- Custom Include
+#include <gen/TempControl_DCPS.hpp>
+#include <thread>         // std::thread, std::this_thread::sleep_for
+#include <chrono> 
 #include "util.hpp"
 
-// Does some C++ magic required by SimD
-REGISTER_TOPIC_TRAITS(TempSensorType);
 
 int
 main(int argc, char* argv[]) {
-  tssub_options opt = { DEFAULT_SAMPLE_NUM, {0, ONE_SECOND/2}};
   if (argc < 2) {
-    std::cout << "USAGE:\n\ttssub <filter> <args1> <arg2> ... <argn>"
+    std::cout << "USAGE:\n\ttssub <filter-expression>"
               << std::endl;
     exit(-1);
   }
-  // Init the SimD runtime
-  dds::Runtime runtime("");
-  // Create the "TempSensor" Topic
-  dds::Topic<TempSensorType> tsTopic("TempSensor");
-  std::vector<std::string> params;
-  for (int i = 2; i < argc; ++i)
-    params.push_back(argv[i]);
+  dds::domain::DomainParticipant dp(0);
+  dds::topic::Topic<tutorial::TempSensorType> topic(dp, "TTempSensor");
+  
+  // Create the filter for the content-filtered-topic
+  dds::topic::Filter filter(argv[1]);
+  dds::topic::ContentFilteredTopic<tutorial::TempSensorType> cfTopic(topic, 
+								     "CFTTempSensor", 
+								     filter);
 
-  dds::ContentFilteredTopic<TempSensorType> cfTsTopic("TempSensor-1",
-                                                      tsTopic,
-                                                      argv[1],
-                                                      params);
-  // Create the DataReader
-  dds::DataReader<TempSensorType> dr(cfTsTopic);
-  // Declare the containers
-  TempSensorTypeSeq data;
-  DDS::SampleInfoSeq status;
+  dds::sub::Subscriber sub(dp);
+  dds::sub::DataReader<tutorial::TempSensorType> dr(sub, cfTopic);
 
-  std::string str = "Hello\
-  now";
-  // Poll & Sleep untill you've not read opt.samples
-  unsigned int count = 0;
-  while (count < opt.samples) {
-    std::cout << "..." << std::endl;
-    // Read data from DDS
-    dr.read(data, status);
-    count += data.length();
-    // Display all the read samples
-    for (unsigned int i = 0; i < data.length(); ++i) {
-      std::cout << data[i] << std::endl;
-    }
-    // Return the loaned memory to DDS.
-    dr.return_loan(data, status);
-    // Sleep a bit before issuing another read
-    nanosleep(&opt.period, 0);
+  while (true) {
+    auto samples = dr.read();
+    std::for_each(samples.begin(),
+		  samples.end(),
+		  [](const dds::sub::Sample<tutorial::TempSensorType>& s) {
+		    std::cout << s.data() << std::endl;
+		  });
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
+
   return 0;
 }
