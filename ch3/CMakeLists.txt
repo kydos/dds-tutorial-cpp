@@ -34,8 +34,13 @@ set (PUB_SOURCES
  tspub.cpp
  util.cpp
 )
-set (SUB_SOURCES
- tssub.cpp
+set (WS_SUB_SOURCES
+ wstssub.cpp
+ util.cpp
+)
+
+set (L_SUB_SOURCES
+ ltssub.cpp
  util.cpp
 )
 
@@ -44,12 +49,14 @@ set (LC_SOURCES
 )
 
 set (PUB_EXE tspub)
-set (SUB_EXE tssub)
+set (WS_SUB_EXE wstssub)
+set (L_SUB_EXE ltssub)
 set (LC_EXE  lcycle)
 set (DATAMODEL datamodel)
 
 add_executable (${PUB_EXE} ${PUB_SOURCES})
-add_executable (${SUB_EXE} ${SUB_SOURCES})
+add_executable (${WS_SUB_EXE} ${WS_SUB_SOURCES})
+add_executable (${L_SUB_EXE} ${L_SUB_SOURCES})
 add_executable (${LC_EXE} ${LC_SOURCES})
 add_library (${DATAMODEL} SHARED ${OpenSplice_DATAMODEL})
 
@@ -68,10 +75,16 @@ target_link_libraries (${PUB_EXE}
   ${DATAMODEL} 
 )
 
-target_link_libraries (${SUB_EXE}
+target_link_libraries (${WS_SUB_EXE}
  ${OpenSplice_LIBRARIES}
   ${DATAMODEL}
 )
+
+target_link_libraries (${L_SUB_EXE}
+ ${OpenSplice_LIBRARIES}
+  ${DATAMODEL}
+)
+
 
 target_link_libraries (${LC_EXE}
  ${OpenSplice_LIBRARIES}
