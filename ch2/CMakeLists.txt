@@ -55,18 +55,14 @@ add_definitions (
 target_link_libraries (
   ${DATAMODEL} 
   ${OpenSplice_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${SimD_LIBRARIES}
 )
 
 target_link_libraries (${PUB_EXE}
  ${OpenSplice_LIBRARIES}
- ${Boost_LIBRARIES}
  ${DATAMODEL} 
 )
 
 target_link_libraries (${SUB_EXE}
  ${OpenSplice_LIBRARIES}
- ${Boost_LIBRARIES}
  ${DATAMODEL}
 )

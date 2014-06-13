@@ -1,50 +1,39 @@
-#include <dds/dds.hpp>
-#include <gen/ccpp_TempControl.h>
+// -- Std C/C++ Include
+#include <iostream>
+#include <gen/TempControl_DCPS.hpp>
+#include <thread>         // std::thread, std::this_thread::sleep_for
+#include <chrono> 
+#include "util.hpp"
 
-REGISTER_TOPIC_TRAITS(TempSensorType);
 
-class TempSensorDataHandler {
-public:
-  void operator() (dds::DataReader<TempSensorType>& reader) {
-    std::cout << "Reading..." << std::endl;
-    std::vector<TempSensorType>    data;
-    std::vector<dds::SampleInfo>   info;
-    reader.read(data, info);
+int
+main(int argc, char* argv[]) {
+  if (argc < 2) {
+    std::cout << "USAGE:\n\ttssub <filter-expression>"
+              << std::endl;
+    exit(-1);
   }
-};
-
-int main(int, char**) { 
-  bool not_done = true;
-  dds::Runtime rt("");
-  dds::Topic<TempSensorType> topic("TempSensorTopic");
-
-  dds::DataReader<TempSensorType> dr(topic);
-
-  //[NOTE #1]: Create an instance of the handler
-  TempSensorDataHandler handler;
-
-  //[NOTE #2]: Create a read condition for the given reader
-  auto rcond = dr.create_readcondition(handler);
-
-  //[NOTE #3]: Create a Waitset and attach the condition
-  dds::WaitSet ws;
-  ws.attach(rcond);
-
-  dds::Duration timeout = {1, 0};
-
-      
-  //[NOTE #4] Wait for some condition to become active, and retrieve
-  //all active conditions
-  auto conds = ws.wait(timeout);
+  dds::domain::DomainParticipant dp(0);
+  dds::topic::Topic<tutorial::TempSensorType> topic(dp, "TTempSensor");
   
-  //[NOTE #5] Execute the condition handlers
-  //  for (auto i = conds.begin(); i < conds.end(); ++i)
-  //    i->execute();
-  
-  
-  //[NOTE #5] Automatically dispatch the condition handlers when
-  //conditions are notified
-  ws.dispatch(timeout);
+  // Create the filter for the content-filtered-topic
+  dds::topic::Filter filter(argv[1]);
+  dds::topic::ContentFilteredTopic<tutorial::TempSensorType> cfTopic(topic, 
+								     "CFTTempSensor", 
+								     filter);
 
-  return 0; 
+  dds::sub::Subscriber sub(dp);
+  dds::sub::DataReader<tutorial::TempSensorType> dr(sub, cfTopic);
+
+  while (true) {
+    auto samples = dr.read();
+    std::for_each(samples.begin(),
+		  samples.end(),
+		  [](const dds::sub::Sample<tutorial::TempSensorType>& s) {
+		    std::cout << s.data() << std::endl;
+		  });
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
+  return 0;
 }

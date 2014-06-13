@@ -1,20 +1,16 @@
 cmake_minimum_required (VERSION 2.6)
-set(CMAKE_MODULE_PATH ../../../cmake)
-project (ddj03)
+set(CMAKE_MODULE_PATH ../cmake)
+project (dds-tutorial)
 
 include (MacroOpenSplice)
 include (osmacros)
 
 find_package (OpenSplice REQUIRED)
-find_package (Boost REQUIRED thread program_options system)
-find_package (SimD REQUIRED)
 
 
 include_directories(
   ${PROJECT_SOURCE_DIR}
-  ${Boost_INCLUDE_DIRS}
   ${OpenSplice_INCLUDE_DIRS}
-  ${SimD_INCLUDE_DIRS}
 )
 
 
@@ -43,34 +39,41 @@ set (SUB_SOURCES
  util.cpp
 )
 
+set (LC_SOURCES
+  lifecycle.cpp
+)
+
 set (PUB_EXE tspub)
 set (SUB_EXE tssub)
+set (LC_EXE  lcycle)
 set (DATAMODEL datamodel)
 
 add_executable (${PUB_EXE} ${PUB_SOURCES})
 add_executable (${SUB_EXE} ${SUB_SOURCES})
+add_executable (${LC_EXE} ${LC_SOURCES})
 add_library (${DATAMODEL} SHARED ${OpenSplice_DATAMODEL})
 
 add_definitions (
-  ${OpenSplice_DEFINITIONS}
-  ${DEFINITIONS}
-  "-ggdb3 -O2" )
+ ${OpenSplice_DEFINITIONS}
+ ${DEFINITIONS}
+)
 
 target_link_libraries (
   ${DATAMODEL} 
   ${OpenSplice_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${SimD_LIBRARIES}
-)
+ )
 
 target_link_libraries (${PUB_EXE}
  ${OpenSplice_LIBRARIES}
- ${Boost_LIBRARIES}
- ${DATAMODEL} 
+  ${DATAMODEL} 
 )
 
 target_link_libraries (${SUB_EXE}
  ${OpenSplice_LIBRARIES}
- ${Boost_LIBRARIES}
- ${DATAMODEL}
+  ${DATAMODEL}
+)
+
+target_link_libraries (${LC_EXE}
+ ${OpenSplice_LIBRARIES}
+  ${DATAMODEL}
 )
