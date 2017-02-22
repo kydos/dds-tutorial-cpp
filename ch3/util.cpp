@@ -25,13 +25,13 @@ tutorial::TemperatureScale char2tempscale(char s) {
   tutorial::TemperatureScale scale;
   switch (s) {
     case 'C': 
-      scale = tutorial::CELSIUS;
+      scale = tutorial::TemperatureScale::CELSIUS;
       break;
     case 'F':
-      scale = tutorial::FAHRENHEIT;
+      scale = tutorial::TemperatureScale::FAHRENHEIT;
       break;
     case 'K':
-      scale = tutorial::KELVIN;
+      scale = tutorial::TemperatureScale::KELVIN;
       break;
     default:
       throw std::range_error("Unknown Temperature Scale");
@@ -42,7 +42,8 @@ tutorial::TemperatureScale char2tempscale(char s) {
 char scale_name[3] = {'C', 'F', 'K'};
 
 char tempscale2char(tutorial::TemperatureScale scale) {
-  return scale_name[scale];
+  int idx = static_cast<int>(scale);
+  return scale_name[idx];
 }
 
 std::ostream&

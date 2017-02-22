@@ -15,7 +15,7 @@ int main(int, char**) {
   //[NOTE #2]: Creating DataWriter with custom QoS.
   // QoS will be covered in detail in article #4.
   dds::pub::DataWriter<tutorial::TempSensorType> dw(pub, topic, dwqos);
-  tutorial::TempSensorType data(0, 24.3F, 0.5F, tutorial::CELSIUS);
+  tutorial::TempSensorType data(0, 24.3F, 0.5F, tutorial::TemperatureScale::CELSIUS);
   dw.write(data);
   tutorial::TempSensorType key;
   short id = 1;
@@ -30,10 +30,10 @@ int main(int, char**) {
   key.id(id);
   dds::core::InstanceHandle h3 = dw.register_instance(key);
 
-  dw << tutorial::TempSensorType(1, 24.3F, 0.5F, tutorial::CELSIUS);
+  dw << tutorial::TempSensorType(1, 24.3F, 0.5F, tutorial::TemperatureScale::CELSIUS);
 
-  dw << tutorial::TempSensorType(2, 23.5F, 0.6F, tutorial::CELSIUS);
-  dw << tutorial::TempSensorType(3, 21.7F, 0.5F, tutorial::CELSIUS);
+  dw << tutorial::TempSensorType(2, 23.5F, 0.6F, tutorial::TemperatureScale::CELSIUS);
+  dw << tutorial::TempSensorType(3, 21.7F, 0.5F, tutorial::TemperatureScale::CELSIUS);
 
   // [NOTE #4]: unregister topic-instance with id=1
   dw.unregister_instance(h1);

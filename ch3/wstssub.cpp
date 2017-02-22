@@ -1,5 +1,6 @@
 // -- Std C/C++ Include
 #include <iostream>
+#include <algorithm>
 #include <gen/TempControl_DCPS.hpp>
 #include <thread>         // std::thread, std::this_thread::sleep_for
 #include <chrono> 
