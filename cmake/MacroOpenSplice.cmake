@@ -16,8 +16,7 @@ MACRO (DEFINE_OpenSplice_SOURCES idlfilename)
 	GET_FILENAME_COMPONENT(it ${idlfilename} ABSOLUTE)
 	GET_FILENAME_COMPONENT(nfile ${idlfilename} NAME_WE)
 	SET(outsources ${outsources} gen/${nfile}.cpp gen/${nfile}.h)
-	SET(outsources ${outsources} gen/${nfile}Dcps.cpp gen/${nfile}Dcps.h)
-	SET(outsources ${outsources} gen/${nfile}Dcps_impl.cpp gen/${nfile}Dcps_impl.h)
+	SET(outsources ${outsources} gen/${nfile}_DCPS.cpp gen/${nfile}_DCPS.h)
 	SET(outsources ${outsources} gen/${nfile}SplDcps.cpp gen/${nfile}SplDcps.h)
 	SET(outsources ${outsources} gen/ccpp_${nfile}.h)
 ENDMACRO(DEFINE_OpenSplice_SOURCES)
@@ -29,7 +28,7 @@ MACRO (OpenSplice_IDLGEN idlfilename)
 	ADD_CUSTOM_COMMAND (
 		OUTPUT ${outsources}
 		COMMAND ${OpenSplice_IDLGEN_BINARY}
-		ARGS  -l isocpp -d gen ${idlfilename}
+		ARGS  -l isocpp2 -d gen ${idlfilename}
 		DEPENDS ${it}
 	)
 ENDMACRO (OpenSplice_IDLGEN)

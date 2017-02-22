@@ -33,7 +33,7 @@ main(int argc, char* argv[])
   float temp = avgT + ((random()*deltaT)/RAND_MAX);
   float hum  = avgH + ((random()*deltaH)/RAND_MAX);
 
-  tutorial::TempSensorType sensor( sid, temp, hum, tutorial::CELSIUS );
+  tutorial::TempSensorType sensor( sid, temp, hum, tutorial::TemperatureScale::CELSIUS );
 
   for (unsigned int i = 0; i < N; ++i) {
     dw.write(sensor);

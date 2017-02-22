@@ -19,14 +19,15 @@ FIND_PATH(OpenSplice_INCLUDE_DIR
 	NAMES
 		make_files.py
 	PATHS
-		$ENV{OSPL_HOME}/include/dcps/C++/isocpp
+		$ENV{OSPL_HOME}/include
 )
 
 SET(OpenSplice_INCLUDE_DIRS 
-	${OpenSplice_INCLUDE_DIR} 
-	$ENV{OSPL_HOME}/include 
-	$ENV{OSPL_HOME}/include/sys
-	$ENV{OSPL_HOME}/include/dcps/C++/SACPP
+  $ENV{OSPL_HOME}/include
+  $ENV{OSPL_HOME}/include/sys
+  $ENV{OSPL_HOME}/include/dcps/C++/isocpp2
+  $ENV{OSPL_HOME}/include/dcps/C++/SACPP
+  
 )
 
 # Find libraries
@@ -39,14 +40,7 @@ FIND_LIBRARY(KERNEL_LIBRARY
 
 FIND_LIBRARY(DCPSISOCPP_LIBRARY
 	NAMES
-		dcpsisocpp
-	PATHS
-		$ENV{OSPL_HOME}/lib
-)
-
-FIND_LIBRARY(DCPSCPP_LIBRARY
-	NAMES
-		dcpssacpp
+		dcpsisocpp2
 	PATHS
 		$ENV{OSPL_HOME}/lib
 )
